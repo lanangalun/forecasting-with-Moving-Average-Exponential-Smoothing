@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+  <title>SKRIPSI</title>
+  <script src="scripts/xlsx.full.min.js"></script>
+  <script src="scripts/jquery-3.3.1.min.js"></script>
+  <script src="scripts/algorithm.js"></script>
+  
+</head>
+
+
+
+<style>
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 40px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: green;
+}
+</style>
+<body>
+  <h1 align="center">P E R A M A L A N &nbsp;&nbsp; M E N G G U N A K A N</h1>
+  <h1 align="center">Moving Average &</h1>
+  
+  <h1 align="center">Exponential Smoothing</h1>
+  <h3 align="center"> &nbsp;&nbsp; </h3>   
+
+ <h3 align="center">
+<!-- L : <input type="number" step="1" min="1" style="width: 80px; height: 20px"  id="n1" required> -->
+n1 : <input type="number" step="1" min="2" style="width: 80px; height: 20px"  id="n2" required>
+n2 : <input type="number" step="1" min="2" style="width: 80px; height: 20px"  id="n3" required>
+<!-- alpha : <input type="number" step="0.01" min="0" max="1" style="width: 80px; height: 20px" id="n3" required> -->
+</h3>  
+
+<h3 align="center">
+<input type="file" id="myFile"> </h3>  
+ <h3 align="center"> &nbsp;&nbsp; </h3>
+<h3 align="center"><button class="button" onclick="run()">Run</button> </h3>  
+<script>
+var dataA;
+
+var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+function handleFile(e) {
+  var files = e.target.files, f = files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var data = e.target.result;
+    if(!rABS) data = new Uint8Array(data);
+    var workbook = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
+
+    /* DO SOMETHING WITH workbook HERE */
+  var first_sheet_name = workbook.SheetNames[0];
+  /* Get worksheet */
+  var worksheet = workbook.Sheets[first_sheet_name];
+  var dataE = XLSX.utils.sheet_to_json(worksheet,{header:1});
+  dataC=[];
+  for(var i=0;i<dataE.length;i++){      //Convert dataE(string) ke dataC(integer)
+    dataC[i]=[];
+    for(var j=0;j<dataE[0].length;j++){
+    dataE[i][j] = dataE[i][j].replace(",",".");
+    dataC[i][j]=parseFloat(dataE[i][j]);
+    }
+  }
+  dataA = copyD(dataC);
+  };
+  if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
+}
+myFile.addEventListener('change', handleFile, false);
+
+function run(){
+  
+  
+  
+   // var L = document.getElementById("n1").value;
+   // L = parseFloat(L);
+   // var alpha = document.getElementById("n3").value;
+   // alpha = parseFloat(alpha);
+   var n = document.getElementById("n2").value;
+   n = parseFloat(n);
+   var n2 = document.getElementById("n3").value;
+   n2 = parseFloat(n2);
+  if(dataA!=null&&n>1&&n2>1){
+    
+   compare(dataA,n,n2)
+  }
+
+
+
+  }
+
+
+
+
+
+</script>
+
+<h3 align="center"> &nbsp;&nbsp; </h3>
+
+<h4 align="center">
+<div id = "tab">
+        <table id = "list" cellspacing = "1px" cellpadding = "8px" text-align = "center">
+            <thead>
+                <tr>
+                    <td>Metode </td>
+                    <td>MSE </td>
+                    <td>Nilai Prediksi</td>
+                    <td>Aplha </td>
+                    <td>L </td>
+                    
+                </tr>
+               
+                  
+               
+            </thead>
+
+            <tbody>
+
+
+            </tbody>
+        </table>
+</div> </h4>
+
+
+
+</body>
+</html>
